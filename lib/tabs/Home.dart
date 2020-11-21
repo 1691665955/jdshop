@@ -159,62 +159,70 @@ class _HomePageState extends State<HomePage>
     var itemWidth =
         (ScreenAdapter.getScreenWidth() - ScreenAdapter.width(60)) / 2;
 
-    return Container(
-      padding: EdgeInsets.all(ScreenAdapter.width(20)),
-      width: itemWidth,
-      decoration: BoxDecoration(
-        border: Border.all(color: Color.fromRGBO(233, 233, 233, 0.9), width: 1),
-      ),
-      child: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            child: AspectRatio(
-              aspectRatio: 1 / 1,
-              child: Image.network(
-                "${Config.domain}/${item.sPic.replaceAll("\\", "/")}",
-                fit: BoxFit.cover,
+    return InkWell(
+      child: Container(
+        padding: EdgeInsets.all(ScreenAdapter.width(20)),
+        width: itemWidth,
+        decoration: BoxDecoration(
+          border:
+              Border.all(color: Color.fromRGBO(233, 233, 233, 0.9), width: 1),
+        ),
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              child: AspectRatio(
+                aspectRatio: 1 / 1,
+                child: Image.network(
+                  "${Config.domain}/${item.sPic.replaceAll("\\", "/")}",
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: ScreenAdapter.width(10)),
-            child: Text(
-              "${item.title}",
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                  color: Colors.black54, fontSize: ScreenAdapter.fontSize(24)),
+            Padding(
+              padding: EdgeInsets.only(top: ScreenAdapter.width(10)),
+              child: Text(
+                "${item.title}",
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    color: Colors.black54,
+                    fontSize: ScreenAdapter.fontSize(24)),
+              ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: ScreenAdapter.width(10)),
-            child: Stack(
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "¥${item.price}",
-                    style: TextStyle(
-                        fontSize: ScreenAdapter.fontSize(28),
-                        color: Colors.red),
+            Padding(
+              padding: EdgeInsets.only(top: ScreenAdapter.width(10)),
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "¥${item.price}",
+                      style: TextStyle(
+                          fontSize: ScreenAdapter.fontSize(28),
+                          color: Colors.red),
+                    ),
                   ),
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    "¥${item.oldPrice}",
-                    style: TextStyle(
-                        fontSize: ScreenAdapter.fontSize(24),
-                        color: Colors.black54,
-                        decoration: TextDecoration.lineThrough),
-                  ),
-                )
-              ],
-            ),
-          )
-        ],
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      "¥${item.oldPrice}",
+                      style: TextStyle(
+                          fontSize: ScreenAdapter.fontSize(24),
+                          color: Colors.black54,
+                          decoration: TextDecoration.lineThrough),
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
+      onTap: () {
+        Navigator.pushNamed(context, '/productDetail',
+            arguments: {'id': item.sId});
+      },
     );
   }
 

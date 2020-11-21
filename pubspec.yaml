@@ -36,6 +36,10 @@ dependencies:
   dio: ^3.0.10
   #下拉刷新上拉加载
   flutter_easyrefresh: ^2.1.6
+  #本地存储
+  shared_preferences: ^0.5.12+4
+  #网页
+  flutter_inappwebview: ^4.0.0+4
 
 dev_dependencies:
   flutter_test:

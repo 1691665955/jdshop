@@ -5,10 +5,10 @@ import '../config/Config.dart';
 import '../services/ScreenAdapter.dart';
 import '../model/product_model_entity.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import '../services/SearchServices.dart';
 
-// ignore: must_be_immutable
 class ProductListPage extends StatefulWidget {
-  Map arguments;
+  final Map arguments;
 
   ProductListPage(this.arguments);
 
@@ -33,12 +33,20 @@ class _ProductListPageState extends State<ProductListPage> {
   ];
   int _selectHeaderId = 1;
   ScrollController _controller = new ScrollController();
+  TextEditingController _initKeyworsController = TextEditingController();
   List<ProductModelResult> _productList = [];
 
   @override
   void initState() {
     super.initState();
-
+    //给搜索框赋值
+    _initKeyworsController.text = widget.arguments["keywords"] == null
+        ? ''
+        : widget.arguments["keywords"];
+    _controller.addListener(() {
+      FocusScope.of(context).requestFocus(FocusNode());
+    });
+    //请求数据
     _getProductListData();
   }
 
@@ -46,14 +54,16 @@ class _ProductListPageState extends State<ProductListPage> {
     var cid = widget.arguments["sid"];
     var keywords = widget.arguments["keywords"];
     var api =
-        "${Config.domain}/api/plist?cid=${cid==null?'':cid}&search=${keywords==null?'':keywords}&page=${this._page}&pageSize=${this._pageSize}&sort=${this._sort}";
+        "${Config.domain}/api/plist?cid=${cid == null ? '' : cid}&search=${_initKeyworsController.text}&page=${this._page}&pageSize=${this._pageSize}&sort=${this._sort}";
     var result = await Dio().get(api);
     var productList =
         JsonConvert.fromJsonAsT<ProductModelEntity>(result.data).result;
     setState(() {
       if (_page == 1) {
         _productList.clear();
-        _controller.jumpTo(0);
+        if (_controller.hasClients) {
+          _controller.jumpTo(0);
+        }
       }
       _nullData = (_page == 1 && productList.length == 0);
       _productList.addAll(productList);
@@ -66,11 +76,6 @@ class _ProductListPageState extends State<ProductListPage> {
   }
 
   Widget _productListWidget() {
-    if (_nullData) {
-      return Center(
-        child: Text("暂无数据!"),
-      );
-    }
     return Container(
       padding: EdgeInsets.all(ScreenAdapter.width(20)),
       margin: EdgeInsets.only(top: ScreenAdapter.height(80)),
@@ -82,11 +87,13 @@ class _ProductListPageState extends State<ProductListPage> {
               refreshedText: "刷新完成",
               refreshingText: "正在刷新...",
               infoText: "更新于 %T"),
-          footer: _hasMore?ClassicalFooter(
+          footer: _hasMore
+              ? ClassicalFooter(
                   loadingText: "正在加载...",
                   loadedText: "加载完成",
                   noMoreText: "没有更多数据",
-                  infoText: "更新于 %T"):null,
+                  infoText: "更新于 %T")
+              : null,
           onRefresh: () async {
             this._page = 1;
             this._getProductListData();
@@ -176,20 +183,38 @@ class _ProductListPageState extends State<ProductListPage> {
 
   Widget _showIcon(id) {
     if (id == 2 || id == 3) {
-      if (_subHeaderList[id-1]["sort"] == 1)
+      if (_subHeaderList[id - 1]["sort"] == 1)
         return Icon(Icons.arrow_drop_down);
       return Icon(Icons.arrow_drop_up);
     }
     return Text("");
   }
 
+  _subHeaderChanged(id) {
+    if (id == 4) {
+      _scaffoldKey.currentState.openEndDrawer();
+    } else {
+      setState(() {
+        _selectHeaderId = id;
+        _sort =
+            "${_subHeaderList[id - 1]["fileds"]}_${_subHeaderList[id - 1]["sort"]}";
+        _subHeaderList[id - 1]["sort"] = _subHeaderList[id - 1]["sort"] * -1;
+        _page = 1;
+        _getProductListData();
+      });
+    }
+  }
+
   Widget _subHeaderWidget() {
+    if (_productList.length == 0) {
+      return Text("");
+    }
     return Positioned(
       child: Container(
         width: ScreenAdapter.getScreenWidth(),
         height: ScreenAdapter.height(80),
         child: Row(
-          children: _subHeaderList.map((value){
+          children: _subHeaderList.map((value) {
             return Expanded(
               child: InkWell(
                 child: Container(
@@ -202,7 +227,9 @@ class _ProductListPageState extends State<ProductListPage> {
                           value["title"],
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: value["id"]==_selectHeaderId?Colors.red:Colors.black54,
+                            color: value["id"] == _selectHeaderId
+                                ? Colors.red
+                                : Colors.black54,
                           ),
                         ),
                         _showIcon(value["id"])
@@ -212,17 +239,7 @@ class _ProductListPageState extends State<ProductListPage> {
                 ),
                 onTap: () {
                   int id = value["id"];
-                  if (id == 4) {
-                    _scaffoldKey.currentState.openEndDrawer();
-                  } else {
-                    setState(() {
-                      _selectHeaderId = value["id"];
-                      _sort = "${_subHeaderList[value["id"]-1]["fileds"]}_${_subHeaderList[value["id"]-1]["sort"]}";
-                      _subHeaderList[value["id"]-1]["sort"] = _subHeaderList[value["id"]-1]["sort"]*-1;
-                      _page = 1;
-                      _getProductListData();
-                    });
-                  }
+                  _subHeaderChanged(id);
                 },
               ),
               flex: 1,
@@ -245,8 +262,57 @@ class _ProductListPageState extends State<ProductListPage> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text("商品列表"),
-          actions: [Text("")],
+          title: Container(
+            height: 36,
+            padding: EdgeInsets.only(left: 5),
+            decoration: BoxDecoration(
+                color: Color.fromRGBO(233, 233, 233, 0.8),
+                borderRadius: BorderRadius.circular(18)),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.search,
+                  size: 20,
+                ),
+                Expanded(
+                  flex: 1,
+                  child: TextField(
+                    autofocus: false,
+                    controller: _initKeyworsController,
+                    decoration: InputDecoration(
+                        hintText: "请输入商品名称",
+                        hintStyle: TextStyle(fontSize: 14),
+                        labelStyle: TextStyle(fontSize: 14),
+                        contentPadding: EdgeInsets.zero, //文字垂直居中
+                        border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(18))),
+                    onChanged: (text) {
+                      print(text);
+                    },
+                  ),
+                )
+              ],
+            ),
+          ),
+          actions: [
+            InkWell(
+              child: Container(
+                height: 36,
+                width: 40,
+                child: Row(
+                  children: [Text("搜索")],
+                ),
+              ),
+              onTap: () {
+                if (_initKeyworsController.text.length > 0) {
+                  SearchServices.addSearcData(_initKeyworsController.text);
+                }
+                FocusScope.of(context).requestFocus(FocusNode());
+                this._subHeaderChanged(1);
+              },
+            )
+          ],
         ),
         endDrawer: Drawer(
           child: Container(
@@ -255,8 +321,18 @@ class _ProductListPageState extends State<ProductListPage> {
             ),
           ),
         ),
-        body: Stack(
-          children: [_subHeaderWidget(), _productListWidget()],
+        body: GestureDetector(
+          child: _nullData
+              ? Center(
+                  child: Text("暂无数据!"),
+                )
+              : Stack(
+                  children: [_subHeaderWidget(), _productListWidget()],
+                ),
+          onTap: () {
+            //触摸收起键盘
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
         ));
   }
 }

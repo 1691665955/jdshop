@@ -3,11 +3,13 @@ import '../tabs/Tabs.dart';
 import 'RouteError.dart';
 import '../pages/ProductList.dart';
 import '../pages/Search.dart';
+import '../pages/ProductDetail.dart';
 
 final routes = {
   '/': (context) => Tabs(),
   '/productList': (context, {arguments}) => ProductListPage(arguments),
-  '/search': (context) => SearchPage()
+  '/search': (context) => SearchPage(),
+  '/productDetail': (context, {arguments}) => ProductDetailPage(arguments),
 };
 
 // ignore: top_level_function_literal_block
