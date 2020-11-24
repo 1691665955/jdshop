@@ -27,6 +27,9 @@ class ProductDetailModelResult with JsonConvert<ProductDetailModelResult> {
 	@JSONField(name: "sub_title")
 	String subTitle;
 	int salecount;
+	//新增属性
+	int count;
+	String selectedAttr;
 }
 
 class ProductDetailModelResultAttr with JsonConvert<ProductDetailModelResultAttr> {

@@ -64,6 +64,11 @@ productDetailModelResultFromJson(ProductDetailModelResult data, Map<String, dyna
 	if (json['salecount'] != null) {
 		data.salecount = json['salecount']?.toInt();
 	}
+
+	//新增
+	data.count = 1;
+	data.selectedAttr = "";
+
 	return data;
 }
 
@@ -86,6 +91,8 @@ Map<String, dynamic> productDetailModelResultToJson(ProductDetailModelResult ent
 	}
 	data['sub_title'] = entity.subTitle;
 	data['salecount'] = entity.salecount;
+	data["count"] = entity.count;
+	data["selectedAttr"] = entity.selectedAttr;
 	return data;
 }
 

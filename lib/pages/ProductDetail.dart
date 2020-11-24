@@ -8,6 +8,7 @@ import '../widget/MZButton.dart';
 import 'package:dio/dio.dart';
 import '../model/product_detail_model_entity.dart';
 import '../config/Config.dart';
+import '../services/EventBus.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final Map arguments;
@@ -31,7 +32,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   _getProductDetailData() async {
     var api = "${Config.domain}/api/pcontent?id=${widget.arguments['id']}";
     var result = await Dio().get(api);
-    var detail = JsonConvert.fromJsonAsT<ProductDetailModelEntity>(result.data).result;
+    var detail =
+        JsonConvert.fromJsonAsT<ProductDetailModelEntity>(result.data).result;
     setState(() {
       _productDetail = detail;
     });
@@ -90,84 +92,98 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   })
             ],
           ),
-          body: _productDetail==null?Text(""):Stack(
-            children: [
-              TabBarView(
-                children: [
-                  ProductDetailFirst(_productDetail),
-                  ProductDetailSecond(_productDetail),
-                  ProductDetailThird(_productDetail),
-                ],
-              ),
-              Positioned(
-                bottom: 0,
-                child: Container(
-                  width: ScreenAdapter.width(750),
-                  height: 50 + ScreenAdapter.getBottomBarHeight(),
-                  color: Colors.white,
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 50,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border(
-                                top: BorderSide(
-                                    color: Colors.black12, width: 1))),
-                        child: Row(
+          body: _productDetail == null
+              ? Text("")
+              : Stack(
+                  children: [
+                    TabBarView(
+                      children: [
+                        ProductDetailFirst(_productDetail),
+                        ProductDetailSecond(_productDetail),
+                        ProductDetailThird(_productDetail),
+                      ],
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      child: Container(
+                        width: ScreenAdapter.width(750),
+                        height: 50 + ScreenAdapter.getBottomBarHeight(),
+                        color: Colors.white,
+                        child: Column(
                           children: [
-                            InkWell(
-                              child: Container(
-                                width: 100,
-                                height: 50,
-                                child: Column(
-                                  children: [
-                                    Icon(Icons.shopping_cart),
-                                    Text("购物车")
-                                  ],
-                                ),
-                              ),
-                              onTap: () {
-                                print("跳转购物车");
-                              },
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: MZButton(
-                                margin: EdgeInsets.only(
-                                    right: ScreenAdapter.width(20)),
-                                color: Color.fromRGBO(253, 1, 0, 0.9),
-                                title: "加入购物车",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16),
-                                onTap: () {
-                                  print("加入购物车");
-                                },
-                              ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: MZButton(
-                                margin: EdgeInsets.only(
-                                    right: ScreenAdapter.width(20)),
-                                color: Color.fromRGBO(255, 165, 0, 0.9),
-                                title: "立即购买",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16),
-                                onTap: () {
-                                  print("立即购买");
-                                },
+                            Container(
+                              height: 50,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border(
+                                      top: BorderSide(
+                                          color: Colors.black12, width: 1))),
+                              child: Row(
+                                children: [
+                                  InkWell(
+                                    child: Container(
+                                      width: 100,
+                                      height: 50,
+                                      child: Column(
+                                        children: [
+                                          Icon(Icons.shopping_cart),
+                                          Text("购物车")
+                                        ],
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      print("跳转购物车");
+                                    },
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: MZButton(
+                                      margin: EdgeInsets.only(
+                                          right: ScreenAdapter.width(20)),
+                                      color: Color.fromRGBO(253, 1, 0, 0.9),
+                                      title: "加入购物车",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16),
+                                      onTap: () {
+                                        if (_productDetail.attr.length > 0) {
+                                          //广播 弹出筛选
+                                          eventBus.fire(
+                                              ProductDetailEvent("加入购物车"));
+                                        } else {
+                                          print("加入购物车");
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: MZButton(
+                                      margin: EdgeInsets.only(
+                                          right: ScreenAdapter.width(20)),
+                                      color: Color.fromRGBO(255, 165, 0, 0.9),
+                                      title: "立即购买",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16),
+                                      onTap: () {
+                                        if (_productDetail.attr.length > 0) {
+                                          //广播 弹出筛选
+                                          eventBus
+                                              .fire(ProductDetailEvent("立即购买"));
+                                        } else {
+                                          print("立即购买");
+                                        }
+                                      },
+                                    ),
+                                  )
+                                ],
                               ),
                             )
                           ],
                         ),
-                      )
-                    ],
-                  ),
+                      ),
+                    )
+                  ],
                 ),
-              )
-            ],
-          ),
         ));
   }
 }
