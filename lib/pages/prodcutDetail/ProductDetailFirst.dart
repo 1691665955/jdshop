@@ -6,6 +6,9 @@ import '../../config/Config.dart';
 import '../../services/EventBus.dart';
 import 'CartNum.dart';
 import '../../services/CartServices.dart';
+import 'package:provider/provider.dart';
+import '../../provider/CartProvider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ProductDetailFirst extends StatefulWidget {
   final ProductDetailModelResult productDetail;
@@ -118,19 +121,19 @@ class _ProductDetailFirstState extends State<ProductDetailFirst>
                             return Wrap(
                               children: [
                                 Container(
-                                  width: ScreenAdapter.width(150),
+                                  width: ScreenAdapter.width(180),
                                   padding: EdgeInsets.only(left: 10, top: 20),
                                   height: 60,
                                   child: Text(
                                     "${attrItem.cate}",
                                     style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                        TextStyle(fontWeight: FontWeight.bold,fontSize: ScreenAdapter.width(32)),
                                   ),
                                 ),
                                 Container(
                                   padding: EdgeInsets.only(top: 5),
                                   width: ScreenAdapter.getScreenWidth() -
-                                      ScreenAdapter.width(150),
+                                      ScreenAdapter.width(180),
                                   child: Wrap(
                                     children: attrItem.attrList.map((cateItem) {
                                       return Container(
@@ -142,7 +145,7 @@ class _ProductDetailFirstState extends State<ProductDetailFirst>
                                               style: TextStyle(
                                                   color: cateItem["checked"]
                                                       ? Colors.white
-                                                      : Colors.black54),
+                                                      : Colors.black54,fontSize: ScreenAdapter.fontSize(28)),
                                             ),
                                             backgroundColor: cateItem["checked"]
                                                 ? Colors.red
@@ -203,10 +206,13 @@ class _ProductDetailFirstState extends State<ProductDetailFirst>
                                     style: TextStyle(color: Colors.white),
                                     margin:
                                         EdgeInsets.only(left: 20, right: 10),
-                                    onTap: () {
-                                      CartServices.addCart(_productDetail);
+                                    onTap: () async {
+                                      await CartServices.addCart(_productDetail);
                                       //关闭底部筛选属性
                                       Navigator.pop(context);
+                                      //调用Provider更新数据
+                                      context.read<CartProvider>().updateCartList();
+                                      Fluttertoast.showToast(msg: "加入购物车成功",gravity: ToastGravity.CENTER);
                                     },
                                   )),
                               Expanded(

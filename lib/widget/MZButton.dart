@@ -10,6 +10,7 @@ class MZButton extends StatelessWidget {
   final double borderRadius;
   final Border border;
   final EdgeInsets padding;
+  final MainAxisAlignment horizontalAlignment;
   final VoidCallback onTap;
 
   MZButton(
@@ -22,26 +23,32 @@ class MZButton extends StatelessWidget {
       this.padding = EdgeInsets.zero,
       this.borderRadius = 10,
       this.border,
+      this.horizontalAlignment = MainAxisAlignment.center,
       this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      child: Container(
-        height: height,
-        width: width,
-        margin: margin,
-        padding: padding,
-        decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(10),
-            border: border),
-        child: Center(
-          child: Text(
-            title,
-            style: style,
-          ),
-        ),
+      child: Row(
+        mainAxisAlignment: horizontalAlignment,
+        children: [
+          Container(
+            height: height,
+            width: width,
+            margin: margin,
+            padding: padding,
+            decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(borderRadius),
+                border: border),
+            child: Center(
+              child: Text(
+                title,
+                style: style,
+              ),
+            ),
+          )
+        ],
       ),
       onTap: onTap,
     );

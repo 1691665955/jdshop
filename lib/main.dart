@@ -3,6 +3,7 @@ import 'routers/Router.dart';
 //引入provider
 import 'package:provider/provider.dart';
 import 'provider/CartProvider.dart';
+import 'provider/CheckOutProvider.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,12 +19,25 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => CartProvider(),)
+        ChangeNotifierProvider(create: (_) => CartProvider(),),
+        ChangeNotifierProvider(create: (_) => CheckOutProvider(),)
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
         onGenerateRoute: onGenerateRoute,
+        builder: (context, child) => Scaffold(
+          body: GestureDetector(
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus &&
+                  currentFocus.focusedChild != null) {
+                FocusManager.instance.primaryFocus.unfocus();
+              }
+            },
+            child: child,
+          ),
+        ),
         theme: ThemeData(
             primaryColor: Colors.white
         ),

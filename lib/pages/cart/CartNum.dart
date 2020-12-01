@@ -4,17 +4,25 @@ import '../../provider/CartProvider.dart';
 import '../../services/ScreenAdapter.dart';
 
 class CartNum extends StatefulWidget {
+  final Map item;
+
   @override
   _CartNumState createState() => _CartNumState();
+
+  CartNum(this.item);
 }
 
 class _CartNumState extends State<CartNum> {
+
+  Map _item;
+
   @override
   Widget build(BuildContext context) {
+    _item = widget.item;
     return Container(
-      width: ScreenAdapter.width(160),
+      width: ScreenAdapter.width(188),
       decoration:
-          BoxDecoration(border: Border.all(width: 1, color: Colors.black12)),
+          BoxDecoration(border: Border.all(width: ScreenAdapter.width(2), color: Colors.black12)),
       child: Row(
         children: [_leftBtn(), _centerArea(), _rightBtn()],
       ),
@@ -26,11 +34,16 @@ class _CartNumState extends State<CartNum> {
     return InkWell(
       child: Container(
         alignment: Alignment.center,
-        width: ScreenAdapter.width(45),
-        height: ScreenAdapter.width(45),
+        width: ScreenAdapter.width(55),
+        height: ScreenAdapter.width(55),
         child: Text("-"),
       ),
-      onTap: () {},
+      onTap: () {
+        if (_item["count"] > 1) {
+          _item["count"] = _item["count"] - 1;
+          context.read<CartProvider>().itemCountChanged();
+        }
+      },
     );
   }
 
@@ -39,11 +52,14 @@ class _CartNumState extends State<CartNum> {
     return InkWell(
       child: Container(
         alignment: Alignment.center,
-        width: ScreenAdapter.width(45),
-        height: ScreenAdapter.width(45),
+        width: ScreenAdapter.width(55),
+        height: ScreenAdapter.width(55),
         child: Text("+"),
       ),
-      onTap: () {},
+      onTap: () {
+        _item["count"] = _item["count"] + 1;
+        context.read<CartProvider>().itemCountChanged();
+      },
     );
   }
 
@@ -52,12 +68,12 @@ class _CartNumState extends State<CartNum> {
     return Container(
       decoration: BoxDecoration(
           border: Border(
-              left: BorderSide(width: 1, color: Colors.black12),
-              right: BorderSide(width: 1, color: Colors.black12))),
+              left: BorderSide(width: ScreenAdapter.width(2), color: Colors.black12),
+              right: BorderSide(width: ScreenAdapter.width(2), color: Colors.black12))),
       alignment: Alignment.center,
-      width: ScreenAdapter.width(66),
-      height: ScreenAdapter.width(45),
-      child: Text("1"),
+      width: ScreenAdapter.width(70),
+      height: ScreenAdapter.width(55),
+      child: Text("${_item["count"]}"),
     );
   }
 }

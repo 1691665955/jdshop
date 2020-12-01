@@ -19,7 +19,9 @@ class _TabsState extends State<Tabs> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _pageController = PageController(initialPage: _currentIndex);
+    _pageController = PageController(
+      initialPage: _currentIndex,
+    );
   }
 
   @override
@@ -34,7 +36,7 @@ class _TabsState extends State<Tabs> {
             _currentIndex = index;
           });
         },
-        // physics: NeverScrollableScrollPhysics(),//禁止pageView滑动
+        physics: NeverScrollableScrollPhysics(), //禁止pageView滑动
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -47,6 +49,7 @@ class _TabsState extends State<Tabs> {
         type: BottomNavigationBarType.fixed,
         unselectedItemColor: Color.fromRGBO(136, 136, 136, 1),
         selectedItemColor: Colors.red,
+        backgroundColor: Colors.white,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),

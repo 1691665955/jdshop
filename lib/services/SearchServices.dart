@@ -1,7 +1,7 @@
 import 'Storage.dart';
 
 class SearchServices {
-  static Future<void> addSearcData(String keyword) async {
+  static Future<void> addSearchData(String keyword) async {
     var searchListData = await Storage.getStringList("searchList");
     if (searchListData == null) {
       searchListData = List();

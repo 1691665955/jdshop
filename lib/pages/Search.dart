@@ -47,7 +47,7 @@ class _SearchPageState extends State<SearchPage> {
                   title: Text(value,
                       style: TextStyle(fontSize: ScreenAdapter.fontSize(28))),
                   onTap: () {
-                    SearchServices.addSearcData(value);
+                    SearchServices.addSearchData(value);
                     Navigator.pushReplacementNamed(context, '/productList',
                         arguments: {"keywords": value});
                   },
@@ -143,7 +143,7 @@ class _SearchPageState extends State<SearchPage> {
             ),
             onTap: () {
               if (_keywords.length > 0) {
-                SearchServices.addSearcData(_keywords);
+                SearchServices.addSearchData(_keywords);
               }
               Navigator.pushReplacementNamed(context, '/productList',
                   arguments: {"keywords": _keywords});
@@ -151,98 +151,97 @@ class _SearchPageState extends State<SearchPage> {
           )
         ],
       ),
-      body: GestureDetector(
-        child: Container(
-          padding: EdgeInsets.all(ScreenAdapter.width(20)),
-          child: NotificationListener(
-            onNotification: (_) {
-              FocusScope.of(context).requestFocus(FocusNode());
-              return false;
-            },
-            child: ListView(
-              children: [
-                Container(
-                  child: Text(
-                    "热搜",
-                    style: Theme.of(context).textTheme.headline6,
+      body: Container(
+        padding: EdgeInsets.all(ScreenAdapter.width(20)),
+        child: NotificationListener(
+          onNotification: (_) {
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            if (!currentFocus.hasPrimaryFocus &&
+                currentFocus.focusedChild != null) {
+              FocusManager.instance.primaryFocus.unfocus();
+            }
+            return false;
+          },
+          child: ListView(
+            children: [
+              Container(
+                child: Text(
+                  "热搜",
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+              ),
+              Divider(),
+              Wrap(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(ScreenAdapter.width(10)),
+                    margin: EdgeInsets.all(ScreenAdapter.width(20)),
+                    decoration: BoxDecoration(
+                        color: Color.fromRGBO(233, 233, 233, 0.9),
+                        borderRadius:
+                        BorderRadius.circular(ScreenAdapter.width(20))),
+                    child: Text(
+                      "商务笔记本",
+                      style: TextStyle(fontSize: ScreenAdapter.fontSize(24)),
+                    ),
                   ),
-                ),
-                Divider(),
-                Wrap(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(ScreenAdapter.width(10)),
-                      margin: EdgeInsets.all(ScreenAdapter.width(20)),
-                      decoration: BoxDecoration(
-                          color: Color.fromRGBO(233, 233, 233, 0.9),
-                          borderRadius:
-                          BorderRadius.circular(ScreenAdapter.width(20))),
-                      child: Text(
-                        "商务笔记本",
-                        style: TextStyle(fontSize: ScreenAdapter.fontSize(24)),
-                      ),
+                  Container(
+                    padding: EdgeInsets.all(ScreenAdapter.width(10)),
+                    margin: EdgeInsets.all(ScreenAdapter.width(20)),
+                    decoration: BoxDecoration(
+                        color: Color.fromRGBO(233, 233, 233, 0.9),
+                        borderRadius:
+                        BorderRadius.circular(ScreenAdapter.width(20))),
+                    child: Text(
+                      "游戏笔记本",
+                      style: TextStyle(fontSize: ScreenAdapter.fontSize(24)),
                     ),
-                    Container(
-                      padding: EdgeInsets.all(ScreenAdapter.width(10)),
-                      margin: EdgeInsets.all(ScreenAdapter.width(20)),
-                      decoration: BoxDecoration(
-                          color: Color.fromRGBO(233, 233, 233, 0.9),
-                          borderRadius:
-                          BorderRadius.circular(ScreenAdapter.width(20))),
-                      child: Text(
-                        "游戏笔记本",
-                        style: TextStyle(fontSize: ScreenAdapter.fontSize(24)),
-                      ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(ScreenAdapter.width(10)),
+                    margin: EdgeInsets.all(ScreenAdapter.width(20)),
+                    decoration: BoxDecoration(
+                        color: Color.fromRGBO(233, 233, 233, 0.9),
+                        borderRadius:
+                        BorderRadius.circular(ScreenAdapter.width(20))),
+                    child: Text(
+                      "7700K",
+                      style: TextStyle(fontSize: ScreenAdapter.fontSize(24)),
                     ),
-                    Container(
-                      padding: EdgeInsets.all(ScreenAdapter.width(10)),
-                      margin: EdgeInsets.all(ScreenAdapter.width(20)),
-                      decoration: BoxDecoration(
-                          color: Color.fromRGBO(233, 233, 233, 0.9),
-                          borderRadius:
-                          BorderRadius.circular(ScreenAdapter.width(20))),
-                      child: Text(
-                        "7700K",
-                        style: TextStyle(fontSize: ScreenAdapter.fontSize(24)),
-                      ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(ScreenAdapter.width(10)),
+                    margin: EdgeInsets.all(ScreenAdapter.width(20)),
+                    decoration: BoxDecoration(
+                        color: Color.fromRGBO(233, 233, 233, 0.9),
+                        borderRadius:
+                        BorderRadius.circular(ScreenAdapter.width(20))),
+                    child: Text(
+                      "MacBook Pro M1",
+                      style: TextStyle(fontSize: ScreenAdapter.fontSize(24)),
                     ),
-                    Container(
-                      padding: EdgeInsets.all(ScreenAdapter.width(10)),
-                      margin: EdgeInsets.all(ScreenAdapter.width(20)),
-                      decoration: BoxDecoration(
-                          color: Color.fromRGBO(233, 233, 233, 0.9),
-                          borderRadius:
-                          BorderRadius.circular(ScreenAdapter.width(20))),
-                      child: Text(
-                        "MacBook Pro M1",
-                        style: TextStyle(fontSize: ScreenAdapter.fontSize(24)),
-                      ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(ScreenAdapter.width(10)),
+                    margin: EdgeInsets.all(ScreenAdapter.width(20)),
+                    decoration: BoxDecoration(
+                        color: Color.fromRGBO(233, 233, 233, 0.9),
+                        borderRadius:
+                        BorderRadius.circular(ScreenAdapter.width(20))),
+                    child: Text(
+                      "商务笔记本",
+                      style: TextStyle(fontSize: ScreenAdapter.fontSize(24)),
                     ),
-                    Container(
-                      padding: EdgeInsets.all(ScreenAdapter.width(10)),
-                      margin: EdgeInsets.all(ScreenAdapter.width(20)),
-                      decoration: BoxDecoration(
-                          color: Color.fromRGBO(233, 233, 233, 0.9),
-                          borderRadius:
-                          BorderRadius.circular(ScreenAdapter.width(20))),
-                      child: Text(
-                        "商务笔记本",
-                        style: TextStyle(fontSize: ScreenAdapter.fontSize(24)),
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: ScreenAdapter.width(40),
-                ),
-                _historyListWidget()
-              ],
-            ),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: ScreenAdapter.width(40),
+              ),
+              _historyListWidget()
+            ],
           ),
         ),
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        }
       ),
     );
   }

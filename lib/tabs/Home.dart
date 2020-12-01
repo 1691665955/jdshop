@@ -1,3 +1,5 @@
+//轮播图类模型
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import '../config/Config.dart';
@@ -5,9 +7,6 @@ import '../generated/json/base/json_convert_content.dart';
 import '../model/focus_model_entity.dart';
 import '../model/product_model_entity.dart';
 import '../services/ScreenAdapter.dart';
-
-//轮播图类模型
-import 'package:dio/dio.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -98,7 +97,8 @@ class _HomePageState extends State<HomePage>
       height: ScreenAdapter.height(32),
       margin: EdgeInsets.only(left: ScreenAdapter.width(10)),
       padding: EdgeInsets.only(left: ScreenAdapter.width(5)),
-      alignment: Alignment(-1, 0), //Container垂直居中
+      alignment: Alignment(-1, 0),
+      //Container垂直居中
       decoration: BoxDecoration(
           border: Border(left: BorderSide(width: 6, color: Colors.red))),
       child: Text(

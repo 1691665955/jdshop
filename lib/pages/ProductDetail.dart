@@ -9,6 +9,10 @@ import 'package:dio/dio.dart';
 import '../model/product_detail_model_entity.dart';
 import '../config/Config.dart';
 import '../services/EventBus.dart';
+import '../services/CartServices.dart';
+import '../provider/CartProvider.dart';
+import 'package:provider/provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final Map arguments;
@@ -97,6 +101,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               : Stack(
                   children: [
                     TabBarView(
+                      physics: NeverScrollableScrollPhysics(),
                       children: [
                         ProductDetailFirst(_productDetail),
                         ProductDetailSecond(_productDetail),
@@ -122,17 +127,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                 children: [
                                   InkWell(
                                     child: Container(
-                                      width: 100,
+                                      width: 80,
                                       height: 50,
                                       child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          Icon(Icons.shopping_cart),
+                                          Icon(Icons.shopping_cart,size: 24,),
                                           Text("购物车")
                                         ],
                                       ),
                                     ),
                                     onTap: () {
-                                      print("跳转购物车");
+                                      Navigator.pushNamed(context, '/cart');
                                     },
                                   ),
                                   Expanded(
@@ -144,13 +150,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                       title: "加入购物车",
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 16),
-                                      onTap: () {
+                                      onTap: () async {
                                         if (_productDetail.attr.length > 0) {
                                           //广播 弹出筛选
                                           eventBus.fire(
                                               ProductDetailEvent("加入购物车"));
                                         } else {
-                                          print("加入购物车");
+                                          await CartServices.addCart(_productDetail);
+                                          //调用Provider更新数据
+                                          context.read<CartProvider>().updateCartList();
+                                          Fluttertoast.showToast(msg: "加入购物车成功",gravity: ToastGravity.CENTER);
                                         }
                                       },
                                     ),

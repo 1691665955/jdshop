@@ -306,7 +306,7 @@ class _ProductListPageState extends State<ProductListPage> {
               ),
               onTap: () {
                 if (_initKeyworsController.text.length > 0) {
-                  SearchServices.addSearcData(_initKeyworsController.text);
+                  SearchServices.addSearchData(_initKeyworsController.text);
                 }
                 FocusScope.of(context).requestFocus(FocusNode());
                 this._subHeaderChanged(1);
@@ -321,18 +321,12 @@ class _ProductListPageState extends State<ProductListPage> {
             ),
           ),
         ),
-        body: GestureDetector(
-          child: _nullData
-              ? Center(
-                  child: Text("暂无数据!"),
-                )
-              : Stack(
-                  children: [_subHeaderWidget(), _productListWidget()],
-                ),
-          onTap: () {
-            //触摸收起键盘
-            FocusScope.of(context).requestFocus(FocusNode());
-          },
-        ));
+        body: _nullData
+            ? Center(
+                child: Text("暂无数据!"),
+              )
+            : Stack(
+                children: [_subHeaderWidget(), _productListWidget()],
+              ));
   }
 }
