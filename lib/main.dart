@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'routers/Router.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 //引入provider
 import 'package:provider/provider.dart';
 import 'provider/CartProvider.dart';
 import 'provider/CheckOutProvider.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -41,6 +43,15 @@ class _MyAppState extends State<MyApp> {
         theme: ThemeData(
             primaryColor: Colors.white
         ),
+        //实现国际化
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate
+        ],
+        supportedLocales: [
+          const Locale("zh","CH"),
+          const Locale("en", "US")
+        ],
       ),
     );
   }
